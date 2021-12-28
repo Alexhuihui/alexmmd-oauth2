@@ -1,6 +1,7 @@
 package top.alexmmd.oauth2.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import org.redisson.api.RedissonClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -8,11 +9,13 @@ import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import top.alexmmd.oauth2.constant.MessageConstant;
+import top.alexmmd.oauth2.constant.RedisConstant;
 import top.alexmmd.oauth2.domain.entity.Client;
 import top.alexmmd.oauth2.service.ClientService;
 import top.alexmmd.oauth2.service.principal.ClientPrincipal;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,10 +35,13 @@ public class ClientServiceImpl implements ClientService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Resource
+    private RedissonClient redissonClient;
+
     @PostConstruct
     public void initData() {
         String clientSecret = passwordEncoder.encode("123456");
-        clientList = new ArrayList<>();
+        clientList = redissonClient.getList(RedisConstant.CLIENT_LIST);
         // 1、密码模式
         clientList.add(Client.builder()
                 .clientId("client-app")

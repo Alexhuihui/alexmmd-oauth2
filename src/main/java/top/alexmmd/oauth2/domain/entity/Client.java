@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 /**
  * @author Alex 2021/12/16
  */
@@ -12,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Client {
+public class Client implements Serializable {
     private String clientId;
     private String resourceIds;
     private Boolean secretRequire;
