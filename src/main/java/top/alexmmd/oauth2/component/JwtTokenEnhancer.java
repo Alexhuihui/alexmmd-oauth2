@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
 import top.alexmmd.oauth2.service.principal.UserPrincipal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,12 @@ public class JwtTokenEnhancer implements TokenEnhancer {
         Map<String, Object> info = new HashMap<>();
         // 把用户ID设置到JWT中
         info.put("id", userPrincipal.getId());
+        // 把用户角色放入JWT中
+        ArrayList<String> arrayList = new ArrayList<>();
+        userPrincipal.getAuthorities().forEach(grantedAuthority -> {
+            arrayList.add(grantedAuthority.getAuthority());
+        });
+        info.put("role", arrayList);
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(info);
         return accessToken;
     }

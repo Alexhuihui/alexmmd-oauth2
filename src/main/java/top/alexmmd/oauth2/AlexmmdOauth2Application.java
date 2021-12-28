@@ -8,7 +8,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * 启动类
  */
 @EnableDiscoveryClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"top.alexmmd"})
 public class AlexmmdOauth2Application {
 
     public static void main(String[] args) {

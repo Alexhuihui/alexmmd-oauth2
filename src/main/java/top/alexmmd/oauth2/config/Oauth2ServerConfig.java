@@ -39,23 +39,6 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-//    clients.inMemory()
-//        // 1、密码模式
-//        .withClient("client-app")
-//        .secret(passwordEncoder.encode("123456"))
-//        .scopes("read,write")
-//        .authorizedGrantTypes("password", "refresh_token")
-//        .accessTokenValiditySeconds(3600)
-//        .refreshTokenValiditySeconds(86400)
-//        .and()
-//        // 2、授权码授权
-//        .withClient("client-app-2")
-//        .secret(passwordEncoder.encode("123456"))
-//        .scopes("read")
-//        .authorizedGrantTypes("authorization_code", "refresh_token")
-//        .accessTokenValiditySeconds(3600)
-//        .refreshTokenValiditySeconds(86400)
-//        .redirectUris("https://www.gathub.cn", "https://www.baidu.com");
         clients.withClientDetails(clientService);
     }
 

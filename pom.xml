@@ -33,13 +33,27 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-            <version>8.16</version>
         </dependency>
         <!-- redis -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>top.alexmmd</groupId>
+            <artifactId>common-redis</artifactId>
+            <version>1.0.0.RELEASE</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>maven-public</id>
+            <name>maven-public</name>
+            <url>https://www.alexmmd.top/nexus/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>
