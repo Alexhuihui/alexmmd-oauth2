@@ -1,5 +1,7 @@
 server:
   port: 9401
+  servlet:
+    context-path: /auth
 spring:
   profiles:
     active: dev

@@ -9,7 +9,7 @@
     </parent>
     <groupId>top.alexmmd</groupId>
     <artifactId>alexmmd-oauth2</artifactId>
-    <version>1.0.0.SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>alexmmd-oauth2</name>
     <description>alexmmd-oauth2</description>
     <properties>

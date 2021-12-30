@@ -25,7 +25,7 @@ public class ResourceServiceImpl implements ResourceService {
     @PostConstruct
     public void initData() {
         RMap<String, List<String>> map = redissonClient.getMap(RedisConstant.RESOURCE_ROLES_MAP);
-        map.put("/resource/hello", CollUtil.toList("ADMIN"));
-        map.put("/resource/user/currentUser", CollUtil.toList("ADMIN", "USER"));
+        map.put("/user/hello", CollUtil.toList("ADMIN"));
+        map.put("/user/currentUser", CollUtil.toList("ADMIN", "USER"));
     }
 }
