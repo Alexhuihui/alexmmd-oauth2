@@ -12,7 +12,7 @@ import java.util.Collection;
 /**
  * 登录用户信息
  *
- * @author Alex 2021/12/16
+ * @author 汪永晖
  */
 @Data
 public class UserPrincipal implements UserDetails {
