@@ -39,6 +39,15 @@ public class CommonResult<T> {
     }
 
     /**
+     * 成功返回结果
+     *
+     * @param message 提示信息
+     */
+    public static <T> CommonResult<T> success(String message) {
+        return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, null);
+    }
+
+    /**
      * 失败返回结果
      *
      * @param errorCode 错误码
