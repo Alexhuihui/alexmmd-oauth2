@@ -21,6 +21,7 @@ import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 import top.alexmmd.oauth2.component.JwtTokenEnhancer;
 import top.alexmmd.oauth2.service.ClientService;
 import top.alexmmd.oauth2.service.UserService;
+import top.alexmmd.oauth2.tokenGranter.EmailTokenGranter;
 import top.alexmmd.oauth2.tokenGranter.SmsTokenGranter;
 
 import java.security.KeyPair;
@@ -64,6 +65,7 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
         // 放入自定义授权模式,先把默认的几个模式放进去。最后加入我们自定义模式。
         List<TokenGranter> grantersList = new ArrayList<>(Collections.singletonList(endpoints.getTokenGranter()));
         grantersList.add(new SmsTokenGranter(authenticationManager, endpoints.getTokenServices(), endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory()));
+        grantersList.add(new EmailTokenGranter(authenticationManager, endpoints.getTokenServices(), endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory()));
         endpoints.tokenGranter(new CompositeTokenGranter(grantersList));
     }
 

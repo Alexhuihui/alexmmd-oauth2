@@ -22,6 +22,7 @@ public interface VerifyCodeProcessor {
      * @param username   用户名
      * @param scene      验证码使用场景
      * @param verifyCode 验证码
+     * @return 是否成功
      */
-    void verifyCode(String username, String scene, String verifyCode);
+    Boolean verifyCode(String username, String scene, String verifyCode);
 }

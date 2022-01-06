@@ -50,7 +50,7 @@ public class ClientServiceImpl implements ClientService {
                 .clientSecret(clientSecret)
                 .scopeRequire(false)
                 .scope("all")
-                .authorizedGrantTypes("sms,password,refresh_token")
+                .authorizedGrantTypes("sms,password,refresh_token,email")
                 .authorities("ADMIN,USER")
                 .accessTokenValidity(3600)
                 .refreshTokenValidity(86400).build());

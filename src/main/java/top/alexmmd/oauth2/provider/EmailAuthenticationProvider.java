@@ -10,7 +10,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import top.alexmmd.oauth2.token.EmailAuthenticationToken;
 import top.alexmmd.oauth2.token.SmsCodeAuthenticationToken;
+import top.alexmmd.oauth2.tokenGranter.EmailTokenGranter;
 import top.alexmmd.oauth2.tokenGranter.SmsTokenGranter;
 import top.alexmmd.oauth2.validate.VerifyCodeProcessorHolder;
 
@@ -25,7 +27,7 @@ import static top.alexmmd.oauth2.domain.enums.VerifyCodeSceneEnum.LOGIN;
  */
 @Component
 @Slf4j
-public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
+public class EmailAuthenticationProvider implements AuthenticationProvider {
 
     private final static String TEMPLATE = "username:{}, scene:{}, verifyCode:{}";
 
@@ -38,35 +40,30 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        SmsCodeAuthenticationToken authenticationToken = (SmsCodeAuthenticationToken) authentication;
+        EmailAuthenticationToken authenticationToken = (EmailAuthenticationToken) authentication;
 
-        String mobile = authenticationToken.getMobile();
+        String email = authenticationToken.getEmail();
         String verifyCode = authenticationToken.getVerifyCode();
-        log.info("mobile -> {}, verifyCode -> {}", mobile, verifyCode);
+        log.info("email -> {}, verifyCode -> {}", email, verifyCode);
 
-        checkSmsCode(mobile, verifyCode);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(mobile);
+        checkEmailCode(email, verifyCode);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
         // 此时鉴权成功后，返回一个填满用户信息的 SmsCodeAuthenticationToken
-        SmsCodeAuthenticationToken authenticationResult = new SmsCodeAuthenticationToken(userDetails);
+        EmailAuthenticationToken authenticationResult = new EmailAuthenticationToken(userDetails);
 
         authenticationResult.setDetails(authenticationToken);
-        log.info("短信登录验证成功");
+        log.info("邮箱登录验证成功");
         return authenticationResult;
     }
 
-    private void checkSmsCode(String mobile, String verifyCode) {
+    private void checkEmailCode(String email, String verifyCode) {
         // 从redis中获取该手机号对应的短信验证码
-        Boolean isSuccess = verifyCodeProcessorHolder.findVerifyCodeProcessor(SmsTokenGranter.GRANT_TYPE)
-                .verifyCode(mobile, LOGIN.getDescription(), verifyCode);
-
-        if (StrUtil.equals(mobile, "17011111111") &&
-                StrUtil.equals(verifyCode, "899899")) {
-            isSuccess = true;
-        }
+        Boolean isSuccess = verifyCodeProcessorHolder.findVerifyCodeProcessor(EmailTokenGranter.GRANT_TYPE)
+                .verifyCode(email, LOGIN.getDescription(), verifyCode);
 
         if (!isSuccess) {
-            String format = StrUtil.format(TEMPLATE, mobile, LOGIN.getDescription(), verifyCode);
+            String format = StrUtil.format(TEMPLATE, email, LOGIN.getDescription(), verifyCode);
             log.error("验证码错误{}", format);
             throw new BadCredentialsException("验证码错误" + format);
         }
@@ -74,8 +71,8 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        // 判断 authentication 是不是 SmsCodeAuthenticationToken 的子类或子接口
-        return SmsCodeAuthenticationToken.class.isAssignableFrom(authentication);
+        // 判断 authentication 是不是 EmailAuthenticationToken 的子类或子接口
+        return EmailAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
     public UserDetailsService getUserDetailsService() {

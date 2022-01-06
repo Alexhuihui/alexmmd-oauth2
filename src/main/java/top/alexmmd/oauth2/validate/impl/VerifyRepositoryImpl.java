@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import top.alexmmd.oauth2.validate.VerifyRepository;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 汪永晖
@@ -17,7 +18,15 @@ import javax.annotation.Resource;
 @RequiredArgsConstructor
 public class VerifyRepositoryImpl implements VerifyRepository {
 
+    /**
+     * 前缀
+     */
     private final static String PREFIX = "verifyCode:";
+
+    /**
+     * 验证码存活时间
+     */
+    private final static Integer SURVIVE = 15;
 
     @Resource
     private RedissonClient redissonClient;
@@ -25,7 +34,7 @@ public class VerifyRepositoryImpl implements VerifyRepository {
     @Override
     public void save(String username, String scene, String verifyCode) {
         RBucket<String> bucket = redissonClient.getBucket(buildKey(username, scene));
-        bucket.set(verifyCode);
+        bucket.set(verifyCode, SURVIVE, TimeUnit.MINUTES);
     }
 
     @Override

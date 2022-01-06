@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import top.alexmmd.oauth2.provider.EmailAuthenticationProvider;
 import top.alexmmd.oauth2.provider.SmsCodeAuthenticationProvider;
 
 import javax.annotation.Resource;
@@ -32,10 +33,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private DaoAuthenticationProvider daoAuthenticationProvider;
 
+    @Resource
+    private EmailAuthenticationProvider emailAuthenticationProvider;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider);
         auth.authenticationProvider(smsCodeAuthenticationProvider);
+        auth.authenticationProvider(emailAuthenticationProvider);
     }
 
     @Override
