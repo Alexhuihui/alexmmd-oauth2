@@ -36,7 +36,7 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         SmsCodeAuthenticationToken authenticationToken = (SmsCodeAuthenticationToken) authentication;
 
-        String mobile = (String) authenticationToken.getPrincipal();
+        String mobile = authenticationToken.getMobile();
         String verifyCode = authenticationToken.getVerifyCode();
         log.info("mobile -> {}, verifyCode -> {}", mobile, verifyCode);
 
@@ -44,9 +44,9 @@ public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailsService.loadUserByUsername(mobile);
 
         // 此时鉴权成功后，返回一个填满用户信息的 SmsCodeAuthenticationToken
-        SmsCodeAuthenticationToken authenticationResult = new SmsCodeAuthenticationToken(userDetails.getUsername(), userDetails.getAuthorities());
+        SmsCodeAuthenticationToken authenticationResult = new SmsCodeAuthenticationToken(userDetails);
 
-        authenticationResult.setDetails(authenticationToken.getDetails());
+        authenticationResult.setDetails(authenticationToken);
         log.info("短信登录验证成功");
         return authenticationResult;
     }

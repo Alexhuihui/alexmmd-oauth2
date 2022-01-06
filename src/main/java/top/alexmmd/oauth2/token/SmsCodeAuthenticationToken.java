@@ -3,6 +3,7 @@ package top.alexmmd.oauth2.token;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -26,6 +27,11 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
     private String verifyCode;
 
     /**
+     * 用户详细信息
+     */
+    private Object principal;
+
+    /**
      * 构建一个没有鉴权的 SmsCodeAuthenticationToken
      */
     public SmsCodeAuthenticationToken(String mobile, String verifyCode) {
@@ -38,9 +44,10 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
     /**
      * 构建拥有鉴权的 SmsCodeAuthenticationToken
      */
-    public SmsCodeAuthenticationToken(String mobile, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.mobile = mobile;
+    public SmsCodeAuthenticationToken(UserDetails userDetails) {
+        super(userDetails.getAuthorities());
+        this.mobile = userDetails.getUsername();
+        this.principal = userDetails;
         // must use super, as we override
         super.setAuthenticated(true);
     }
@@ -52,7 +59,7 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return this.mobile;
+        return this.principal;
     }
 
     @Override
@@ -72,5 +79,9 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 
     public String getVerifyCode() {
         return this.verifyCode;
+    }
+
+    public String getMobile() {
+        return this.mobile;
     }
 }

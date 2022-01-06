@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -23,7 +25,7 @@ import top.alexmmd.oauth2.tokenGranter.SmsTokenGranter;
 
 import java.security.KeyPair;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,6 +42,7 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
     private final ClientService clientService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenEnhancer jwtTokenEnhancer;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -58,8 +61,8 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
                 .accessTokenConverter(accessTokenConverter())
                 .tokenEnhancer(enhancerChain);
 
-        //放入自定义授权模式,先把默认的几个模式放进去。最后加入我们自定义模式。
-        List<TokenGranter> grantersList = new ArrayList<>(Arrays.asList(endpoints.getTokenGranter()));
+        // 放入自定义授权模式,先把默认的几个模式放进去。最后加入我们自定义模式。
+        List<TokenGranter> grantersList = new ArrayList<>(Collections.singletonList(endpoints.getTokenGranter()));
         grantersList.add(new SmsTokenGranter(authenticationManager, endpoints.getTokenServices(), endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory()));
         endpoints.tokenGranter(new CompositeTokenGranter(grantersList));
     }
@@ -82,6 +85,14 @@ public class Oauth2ServerConfig extends AuthorizationServerConfigurerAdapter {
         // 从classpath下的证书中获取秘钥对
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("jwt.jks"), "654321".toCharArray());
         return keyStoreKeyFactory.getKeyPair("jwt", "654321".toCharArray());
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        return daoAuthenticationProvider;
     }
 
 }
