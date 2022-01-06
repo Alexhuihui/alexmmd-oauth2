@@ -9,6 +9,7 @@ import top.alexmmd.oauth2.validate.VerifyCodeException;
 import top.alexmmd.oauth2.validate.VerifyCodeGenerator;
 import top.alexmmd.oauth2.validate.VerifyCodeProcessor;
 import top.alexmmd.oauth2.validate.VerifyRepository;
+import top.alexmmd.redis.annos.RedisLock;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -29,6 +30,7 @@ public abstract class AbstractVerifyCodeProcessor implements VerifyCodeProcessor
     private VerifyRepository verifyRepository;
 
     @Override
+    @RedisLock(lockName = "createVerifyCode", key = "#username + #scene")
     public void createCode(String username, String scene) {
         String verifyCode = generate(username);
         this.save(username, scene, verifyCode);
@@ -61,6 +63,7 @@ public abstract class AbstractVerifyCodeProcessor implements VerifyCodeProcessor
     }
 
     @Override
+    @RedisLock(lockName = "updateVerifyCode", key = "#username + #scene")
     public Boolean verifyCode(String username, String scene, String verifyCode) {
         String realVerifyCode = verifyRepository.get(username, scene);
         verifyRepository.delete(username, scene);
