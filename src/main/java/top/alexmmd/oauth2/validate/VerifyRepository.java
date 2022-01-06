@@ -10,5 +10,5 @@ public interface VerifyRepository {
 
     String get(String username, String scene);
 
-    void delete(String username, String scene, String verifyCode);
+    void delete(String username, String scene);
 }

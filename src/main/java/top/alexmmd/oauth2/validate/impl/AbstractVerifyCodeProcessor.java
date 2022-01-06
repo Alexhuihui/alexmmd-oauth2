@@ -63,6 +63,7 @@ public abstract class AbstractVerifyCodeProcessor implements VerifyCodeProcessor
     @Override
     public Boolean verifyCode(String username, String scene, String verifyCode) {
         String realVerifyCode = verifyRepository.get(username, scene);
+        verifyRepository.delete(username, scene);
         return StrUtil.equals(realVerifyCode, verifyCode);
     }
 }

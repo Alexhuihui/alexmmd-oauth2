@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
         String password = passwordEncoder.encode("123456");
         userList = new ArrayList<>();
         userList.add(new User(1L, "17011111111", password, 1, CollUtil.toList("ADMIN")));
+        userList.add(new User(3L, "2930807240@qq.com", password, 1, CollUtil.toList("ADMIN")));
         userList.add(new User(2L, "user", password, 1, CollUtil.toList("USER")));
     }
 

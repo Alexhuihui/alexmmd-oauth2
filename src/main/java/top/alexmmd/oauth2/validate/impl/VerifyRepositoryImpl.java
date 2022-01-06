@@ -44,7 +44,7 @@ public class VerifyRepositoryImpl implements VerifyRepository {
     }
 
     @Override
-    public void delete(String username, String scene, String verifyCode) {
+    public void delete(String username, String scene) {
         RBucket<String> bucket = redissonClient.getBucket(buildKey(username, scene));
         bucket.delete();
     }
